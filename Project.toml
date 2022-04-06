@@ -3,6 +3,10 @@ uuid = "bcc24948-e5a6-48db-8ddd-883ea94cf2a5"
 authors = ["97gamjak <97gamjak@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+
 [compat]
 julia = "1"
 

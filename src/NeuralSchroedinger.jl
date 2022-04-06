@@ -1,5 +1,12 @@
 module NeuralSchroedinger
 
-# Write your package code here.
+export greetings
+
+function greetings()
+    println("hello")
+end
+
+export numerov
+include("main_numerov.jl")
 
 end
