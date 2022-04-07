@@ -1,4 +1,4 @@
-struct Inputkeys
+Base.@kwdef struct Inputkeys
 
     potential    = "potential"
 
@@ -7,6 +7,4 @@ struct Inputkeys
     x_end        = "end"
 
     stencil      = "stencil"
-
-    Inputkeys() = new()
 end

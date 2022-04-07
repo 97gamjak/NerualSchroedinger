@@ -1,6 +1,8 @@
 mutable struct Storage
 
-    files::Files
+    files        ::Files
+    inputkeys    ::Inputkeys
+    inputcontrol ::Dict
 
     Storage() = new()
 end

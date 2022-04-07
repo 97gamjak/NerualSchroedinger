@@ -13,7 +13,7 @@ function parse_commandline(args::Vector{String})
         "--flag1"
             help = "an option without argument, i.e. a flag"
             action = :store_true
-        "arg1"
+        "inputfile"
             help = "a positional argument"
             required = true
     end
