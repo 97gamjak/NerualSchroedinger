@@ -1,8 +1,11 @@
+include("matchinput/matchinput.jl")
+
 function readinfile_numerov(storage::Storage)
 
     files = storage.files
 
-    files.inputfile = readfile(files.inputfile)
+    files.inputfile = readfile(files.inputfile_name)
+    filestream      = readlines(files.inputfile)
 
     for i in 1:length(filestream)
 
@@ -15,7 +18,7 @@ function readinfile_numerov(storage::Storage)
             continue
         end
 
-        if(length(lineelements > 2))
+        if(length(lineelements) > 2)
             ToManyArguments(i, files.inputfile_name)
         elseif(length(lineelements) < 2)
             NotEnoughArguments(i, files.inputfile_name)

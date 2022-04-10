@@ -4,7 +4,7 @@ function init()
     storage.files        = Files()
     storage.inputkeys    = Inputkeys()
     storage.potential    = Potential()
-    
+
     inputcontrol = Dict() 
 
     for key in fieldnames(typeof(Inputkeys()))

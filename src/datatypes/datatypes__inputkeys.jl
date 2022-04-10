@@ -2,9 +2,9 @@ Base.@kwdef struct Inputkeys
 
     potential    = "potential"
 
-    n_datapotins = "n_datapoints"
-    x_start      = "start"
-    x_end        = "end"
+    n_datapoints = "n_datapoints"
+    x_start      = "x_start"
+    x_end        = "x_end"
 
     stencil      = "stencil"
 end

@@ -9,6 +9,7 @@ function parse_potential(key::String, value::String, storage::Storage)
         value = lowercase(value)
         if(value == "harmonic")
             potential.potential = Harmonic
+            potential.func      = harmonic
         else
             printerror("Unknown potential keyword " * value * "!")
             printempty("- harmonic")
