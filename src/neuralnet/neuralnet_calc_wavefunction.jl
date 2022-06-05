@@ -29,13 +29,11 @@ function calc_neural_wavefunction(storage::Storage)
 
         init_y(actFunc, nodes)        
 
+        vec_params = [actFunc.vec_a; actFunc.vec_b; actFunc.vec_c]
+
         calc_y(actFunc)
 
-        actFunc.norm   = sqrt(integrate(actFunc.vec_x, actFunc.vec_y.^2, SimpsonEven()))
-        actFunc.vec_a /= actFunc.norm
-        actFunc.vec_y /= actFunc.norm
-
-        vec_params = [actFunc.vec_a; actFunc.vec_b; actFunc.vec_c]
+        normalieze_y(storage, vec_params)
 
         #vec_params =  basinhopping(2, loss_function, storage, vec_params)
         vec_params = bfgs(x -> loss_function(storage, x), vec_params)
@@ -72,7 +70,7 @@ function calc_neural_wavefunction(storage::Storage)
 
 end
 
-function loss_function(storage, vec_params)
+function loss_function(storage::Storage, vec_params::Vector{Float64})
 
     nodes          = storage.settings.nodes
     ndatapoints    = storage.potential.ndatapoints
@@ -92,10 +90,7 @@ function loss_function(storage, vec_params)
 
     calc_y(actFunc)
 
-    norm                = sqrt(integrate(actFunc.vec_x, actFunc.vec_y.^2, SimpsonEven()))
-    actFunc.vec_a      /= norm
-    actFunc.vec_y      /= norm
-    vec_params[1:nodes] = actFunc.vec_a
+    normalieze_y(storage, vec_params)
 
     calc_d2y_dx2(actFunc)
 
@@ -117,6 +112,7 @@ function loss_function(storage, vec_params)
         println("boundary   ", contr_boundary)
         println("diff_eq    ", contr_diff_equation)
         println("eigenvalue ", contr_expectation)
+        println("norm       ", actFunc.norm)
         println("loss       ", loss)
         println("")
     end
@@ -126,4 +122,15 @@ function loss_function(storage, vec_params)
     #TODO: make a loss function wrapper and a loss function for each contribution
     return loss
 
+end
+
+function normalieze_y(storage::Storage, vec_params::Vector{Float64})
+
+    actFunc = storage.activationFunction
+    nodes   = storage.settings.nodes
+
+    actFunc.norm        = sqrt(integrate(actFunc.vec_x, actFunc.vec_y.^2, SimpsonEven()))
+    actFunc.vec_a      /= actFunc.norm
+    actFunc.vec_y      /= actFunc.norm
+    vec_params[1:nodes] = actFunc.vec_a
 end

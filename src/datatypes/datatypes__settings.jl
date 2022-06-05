@@ -14,5 +14,7 @@ mutable struct Settings
 
     nstates::Int64
 
+    dim::Int64
+
     Settings() = new()
 end
