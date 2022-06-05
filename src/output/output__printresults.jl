@@ -19,7 +19,7 @@ function print_results(storage::Storage)
         # for j in 1:storage.settings.nstates
         #     @printf(eigenvectorfile, "%20.14lf ", mat_eigenvectors[i, j])
         # end
-        @printf(eigenvectorfile, "%20.14lf ", storage.activationFunction.vec_ψ[i])
+        @printf(eigenvectorfile, "%20.14lf ", storage.activationFunction.vec_y[i])
         @printf(eigenvectorfile, "\n")
     end
 

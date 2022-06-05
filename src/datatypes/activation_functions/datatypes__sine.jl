@@ -9,16 +9,13 @@ mutable struct Sine <: ActivationFunction
     vec_b::Vector{Float64}
     vec_c::Vector{Float64}
 
-    vec_ψ::Vector{Float64}
-    vec_dψ_dx::Vector{Float64}
-    vec_d2ψ_dx2::Vector{Float64}
+    vec_y::Vector{Float64}
+    vec_dy_dx::Vector{Float64}
+    vec_d2y_dx2::Vector{Float64}
 
     vec_x::Vector{Float64}
 
     integration::Function  # TODO: at the moment not used!
-
-    x_min::Float64  # TODO: at the moment not used!  
-    x_max::Float64  # TODO: at the moment not used!
 
     norm::Float64  # TODO: at the moment not used properly... but implemented
 
@@ -32,7 +29,7 @@ end
 # function to initialize sine activation function randomly #
 #                                                          #
 ############################################################
-function init_ψ(sine::Sine, nodes::Int64)
+function init_y(sine::Sine, nodes::Int64)
     weird_number1 = sqrt(6) #divided by number of nodes in sqrt???
     weird_number2 = 30
 
@@ -48,10 +45,10 @@ end
 #                   ψ = ∑ᵢ aᵢ*sin(bᵢx + cᵢ)               #
 #                                                         #
 ###########################################################
-function calc_ψ(sine::Sine)
-    sine.vec_ψ = Vector()
+function calc_y(sine::Sine)
+    sine.vec_y = Vector()
     for x in sine.vec_x
-        push!(sine.vec_ψ, sum(sine.vec_a.*sin.(sine.vec_b*x .+ sine.vec_c)))
+        push!(sine.vec_y, sum(sine.vec_a.*sin.(sine.vec_b*x .+ sine.vec_c)))
     end
 end
 
@@ -63,10 +60,10 @@ end
 #               dψ/dx = ∑ᵢ aᵢ*bᵢ*cos(bᵢx + cᵢ)         #
 #                                                      #
 ########################################################
-function calc_dψ_dx(sine::Sine)
-    sine.vec_dψ_dx = Vector()
+function calc_dy_dx(sine::Sine)
+    sine.vec_dy_dx = Vector()
     for x in sine.vec_x
-        push!(sine.vec_dψ_dx, sum(sine.vec_a.*sine.vec_b.*cos.(sine.vec_a*x .+ sine.vec_c)))
+        push!(sine.vec_dy_dx, sum(sine.vec_a.*sine.vec_b.*cos.(sine.vec_a*x .+ sine.vec_c)))
     end
 end
 
@@ -78,9 +75,9 @@ end
 #            d²ψ/dx² = -∑ᵢ aᵢ*b²ᵢ*sin(bᵢx + cᵢ)         #
 #                                                       #
 #########################################################
-function calc_d2ψ_dx2(sine::Sine)
-    sine.vec_d2ψ_dx2 = Vector()
+function calc_d2y_dx2(sine::Sine)
+    sine.vec_d2y_dx2 = Vector()
     for x in sine.vec_x
-        push!(sine.vec_d2ψ_dx2, -sum(sine.vec_a.*sine.vec_b.^2 .*sin.(sine.vec_b*x .+ sine.vec_c)))
+        push!(sine.vec_d2y_dx2, -sum(sine.vec_a.*sine.vec_b.^2 .*sin.(sine.vec_b*x .+ sine.vec_c)))
     end
 end

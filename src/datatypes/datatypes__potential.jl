@@ -7,10 +7,16 @@ mutable struct Potential
 
     ndatapoints    ::Int64
 
+    x_unit        ::Unitful.LengthUnits
+    potential_unit::Unitful.EnergyUnits
+
     intervall::Unitful.Length
+    
     vec_x    ::Vector{Unitful.Length}
 
     vec_potential::Vector{Unitful.Energy}
+
+    
     
     Potential() = new()
 end

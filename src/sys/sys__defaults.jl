@@ -6,5 +6,7 @@ function set_defaults(storage::Storage)
     storage.settings.mass    = 1.0u"u"
     storage.settings.nstates = 5
     storage.settings.nodes   = 40
-    
+
+    storage.potential.x_unit         = u"angstrom"
+    storage.potential.potential_unit = u"kcalpermol"
 end
