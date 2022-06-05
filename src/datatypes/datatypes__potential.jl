@@ -1,15 +1,25 @@
+########################################
+#                                      #
+# struct containing all potential data #
+#                                      #
+########################################
 mutable struct Potential
 
-    potential ::PotentialEnum
-    func      ::Function
+    ndatapoints::Int64
 
-    n_datapoints::Int64
-    x_start::Float64
-    x_end::Float64
+    intervall::Unitful.Length
+    vec_x    ::Vector{Unitful.Length}
 
-    intervall::Float64
+    vec_potential::Vector{Unitful.Energy}
     
-    stencil::Function
-
     Potential() = new()
 end
+
+####################################################
+#                                                  #
+# Wrapper function for calling LinearAlgebra.diagm #
+# on a vector of Unitful.Energy                    #
+#                                                  #
+####################################################
+
+diagm(vector::Vector{Unitful.Energy}) = diagm(ustrip(vector)) .* unit(vector[1])

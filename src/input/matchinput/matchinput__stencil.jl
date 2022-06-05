@@ -2,21 +2,21 @@ function parse_stencil(key::String, value::String, storage::Storage)
     
     inputkeys    = storage.inputkeys
     inputcontrol = storage.inputcontrol
-    potential    = storage.potential
+    laplace      = storage.laplace
 
     if(key == inputkeys.stencil)
 
         value = lowercase(value)
         if(value == "3")
-            potential.stencil      = stencil_3
+            laplace.stencil = 3
         elseif(value == "5")
-            potential.stencil      = stencil_5
+            laplace.stencil = 5
         elseif(value == "7")
-            potential.stencil      = stencil_7
+            laplace.stencil = 7
         elseif(value == "9")
-            potential.stencil      = stencil_9
+            laplace.stencil = 9
         else
-            printerror("Unknown stencil keyword " * value * "!")
+            printerror("Unknown stencil keyword " * value * " - Valid options are:")
             printempty("- 3")
             printempty("- 5")
             printempty("- 7")
@@ -24,7 +24,7 @@ function parse_stencil(key::String, value::String, storage::Storage)
             exit(1)
         end
 
-        inputcontrol[inputkeys.potential] += 1
+        inputcontrol[inputkeys.stencil] += 1
         return true
 
     end

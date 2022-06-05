@@ -1,28 +1,79 @@
-include("numerov__laplace.jl")
-
 function calc_numerov(storage::Storage)
 
-    x_start = storage.potential.x_start
-    x_end = storage.potential.x_end
-    n_datapoints = storage.potential.n_datapoints
+    ####################################
+    #                                  #
+    # reading potential from inputfile #
+    #                                  #
+    ####################################
 
-    intervall = (x_end - x_start) / (n_datapoints - 1)
+    readpotential(storage)
 
-    storage.potential.intervall = intervall
+    ################################
+    #                              #
+    # retrieving data from storage #
+    #                              #
+    ################################
 
-    x_data = Vector{Float64}()
-    potential_vector = Vector{Float64}()
+    ndatapoints   = storage.potential.ndatapoints
+    intervall     = storage.potential.intervall
+    vec_potential = storage.potential.vec_potential
+    mass          = storage.settings.mass
 
-    for i in 0:n_datapoints-1
-        push!(x_data, x_start + i*intervall)
-        push!(potential_vector, storage.potential.func(x_start + i*intervall))
+    ##################################
+    #                                #
+    # creating kinetic energy matrix #
+    #                                #
+    ##################################
+
+    mat_laplace = -0.5 * ħ^2 / mass * storage.laplace.func_stencil(ndatapoints)/intervall^2
+
+    ####################################
+    #                                  #
+    # creating potential energy matrix #
+    #                                  #
+    ####################################
+
+    mat_potential = diagm(vec_potential)
+
+    ###############################
+    #                             #
+    # creating hamiltonian matrix #
+    #                             #
+    ###############################
+
+    mat_hamiltonian = mat_laplace + mat_potential
+
+    mat_hamiltonian = uconvert.(u"kcalpermol",  mat_hamiltonian)
+
+    decomposition = eigen(mat_hamiltonian) # pay attention here the Eigen struct is returned without units!!!
+
+    storage.output.vec_eigenvalues  = decomposition.values
+    storage.output.mat_eigenvectors = decomposition.vectors
+
+end
+
+function readpotential(storage::Storage)
+
+    potential_inputfile = readfile(storage.files.potential_inputfile_name)
+
+    filestream = readlines(potential_inputfile)
+
+    vec_x = Vector{Unitful.Length}()
+    vec_potential = Vector{Unitful.Energy}()
+
+    for line in filestream
+
+        lineelements = split(line)
+
+        push!(vec_x, parse.(Float64, lineelements[1]) * u"Å")
+        push!(vec_potential, parse.(Float64, lineelements[2]) * u"kcalpermol")
     end
 
-    laplace = storage.potential.stencil(n_datapoints)/intervall^2
+    storage.potential.vec_x = vec_x
+    storage.potential.vec_potential = vec_potential
 
-    hamiltonian = -0.5 * laplace + diagm(potential_vector)
+    storage.potential.intervall = vec_x[2] - vec_x[1]
 
-    println(eigvals(hamiltonian)[1:5])
-
+    storage.potential.ndatapoints = length(vec_x)
 
 end

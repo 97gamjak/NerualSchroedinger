@@ -1,6 +1,4 @@
-potential harmonic
-n_datapoints 201
-x_start -4.0
-x_end 4.0
+potential_inputfile test.dat
+#potential_inputfile test2.dat
 
 stencil 9

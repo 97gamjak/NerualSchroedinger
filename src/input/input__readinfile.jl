@@ -1,6 +1,4 @@
-include("matchinput/matchinput.jl")
-
-function readinfile_numerov(storage::Storage)
+function readinfile(storage::Storage)
 
     files = storage.files
 

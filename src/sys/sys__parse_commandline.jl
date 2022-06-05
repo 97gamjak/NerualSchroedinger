@@ -1,5 +1,9 @@
-using ArgParse
-
+###################################################
+#                                                 #
+# Simple parser to control command line arguments #
+# TODO: just a template for future manipulation   #
+#                                                 #
+###################################################
 function parse_commandline(args::Vector{String})
     s = ArgParseSettings()
 
