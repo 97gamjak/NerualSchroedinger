@@ -11,6 +11,7 @@ Base.@kwdef struct Inputkeys
     #                               #
     #################################
 
+    jobtype         = "jobtype"
     mass            = "mass"  #TODO: parse input
     nstates         = "n_states"
     nodes           = "nodes" #TODO: parse

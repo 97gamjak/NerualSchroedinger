@@ -1,0 +1,5 @@
+@enum JobTypeEnum begin
+    POTENTIAL
+    WAVEFUNCTION
+    POTENTIAL_WAVEFUNCTION
+end

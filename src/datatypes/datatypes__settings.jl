@@ -4,6 +4,8 @@
 #                                     #
 #######################################
 mutable struct Settings
+
+    jobtype::JobTypeEnum
     
     mass::Unitful.Mass
 
