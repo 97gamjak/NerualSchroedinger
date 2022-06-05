@@ -6,8 +6,14 @@ function matchinput(lineelements::Vector{SubString{String}}, line::Int64, storag
     value = string(lineelements[2])      # buffer[2] would only be substring
 
     valid_key = valid_key || parse_stencil(key, value, storage)
+    
     valid_key = valid_key || parse_potential_inputfile(key, value, storage)
     valid_key = valid_key || parse_eigenvaluefile(key, value, storage)
+
+    valid_key = valid_key || parse_nstates(key, value, storage)
+
+    valid_key = valid_key || parse_nodes(key, value, storage)
+    valid_key = valid_key || parse_potential_nodes(key, value, storage)
 
     if(!valid_key)
         @error ("Unknown keyword " * key * " in line " * string(line) * " in input file")

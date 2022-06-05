@@ -27,6 +27,11 @@ mutable struct Sine <: ActivationFunction
     Sine() = new()
 end
 
+############################################################
+#                                                          #
+# function to initialize sine activation function randomly #
+#                                                          #
+############################################################
 function init_ψ(sine::Sine, nodes::Int64)
     weird_number1 = sqrt(6) #divided by number of nodes in sqrt???
     weird_number2 = 30

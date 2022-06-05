@@ -7,7 +7,6 @@ function init()
     storage.laplace      = Laplace()
     storage.output       = Output()
     storage.settings     = Settings()
-    storage.neuralnet    = NeuralNetwork()
 
     #TODO: parse input for this
 
@@ -30,11 +29,7 @@ function init()
 
     storage.inputcontrol = inputcontrol
 
-    storage.files.eigenvaluefile_name  = "eigenvalues.dat"
-    storage.files.eigenvectorfile_name = "eigenvectors.dat"
-
-    storage.settings.mass    = 1.0u"u"
-    storage.settings.nstates = 5
+    set_defaults(storage)
 
     return storage
     

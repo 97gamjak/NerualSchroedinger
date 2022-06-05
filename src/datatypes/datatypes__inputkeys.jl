@@ -11,7 +11,10 @@ Base.@kwdef struct Inputkeys
     #                               #
     #################################
 
-    mass = "mass" #TODO: parse input
+    mass            = "mass"  #TODO: parse input
+    nstates         = "n_states"
+    nodes           = "nodes" #TODO: parse
+    potential_nodes = "potential_nodes" #TODO: parse
 
     #########################################
     #                                       #

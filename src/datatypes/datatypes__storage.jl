@@ -12,7 +12,6 @@ mutable struct Storage
     laplace           ::Laplace 
     output            ::Output  
     settings          ::Settings
-    neuralnet         ::NeuralNetwork
     activationFunction::ActivationFunction
 
     Storage() = new()

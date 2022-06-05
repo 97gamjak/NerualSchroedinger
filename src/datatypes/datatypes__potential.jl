@@ -5,7 +5,7 @@
 ########################################
 mutable struct Potential
 
-    ndatapoints::Int64
+    ndatapoints    ::Int64
 
     intervall::Unitful.Length
     vec_x    ::Vector{Unitful.Length}
