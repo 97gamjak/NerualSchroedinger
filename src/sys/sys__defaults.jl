@@ -10,6 +10,7 @@ function set_defaults(storage::Storage)
 
     storage.potential.x_unit         = u"angstrom"
     storage.potential.potential_unit = u"kcalpermol"
+    storage.settings.mass_unit       = u"u" #TODO: parse
 
     storage.settings.jobtype = WAVEFUNCTION
 end

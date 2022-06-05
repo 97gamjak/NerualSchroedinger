@@ -8,6 +8,7 @@ mutable struct Settings
     jobtype::JobTypeEnum
     
     mass::Unitful.Mass
+    mass_unit::Unitfull.MassUnits
 
     nodes          ::Int64
     potential_nodes::Int64
