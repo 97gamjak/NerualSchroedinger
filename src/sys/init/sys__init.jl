@@ -1,4 +1,8 @@
 function init()
+
+    ##########################################
+    # initialization of datatypes in storage #
+    ##########################################
     
     storage              = Storage()
     storage.files        = Files()
@@ -9,11 +13,9 @@ function init()
     storage.settings     = Settings()
 
     ######################################################
-    #                                                    #
     # Initialize inputcontrol with all possible keywords #
     # of inputfile - dictionary to store the number of   #
     # appearances in the inputfile                       #
-    #                                                    #
     ######################################################
 
     inputcontrol = Dict() 
@@ -23,6 +25,10 @@ function init()
     end
 
     storage.inputcontrol = inputcontrol
+
+    ##############################
+    # setting all default values #
+    ##############################
 
     set_defaults(storage)
 

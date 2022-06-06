@@ -5,11 +5,9 @@ function parse_eigenvaluefile(key::String, value::String, storage::Storage)
     files        = storage.files
 
     if(key == inputkeys.eigenvaluefile)
-
         files.eigenvaluefile_name = value
         inputcontrol[inputkeys.eigenvaluefile] += 1
         return true
-
     end
 
     return false
