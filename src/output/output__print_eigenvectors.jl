@@ -1,11 +1,11 @@
 function print_eigenvectors(storage::Storage)
 
-    ndatapoints      = storage.settings.ndatapoints
+    ndatapoints      = storage.potential.ndatapoints
     nstates          = storage.settings.nstates
     filename         = storage.files.eigenvectorfile_name
     vec_x            = ustrip(storage.potential.vec_x)
     vec_potential    = ustrip(storage.potential.vec_potential)
-    mat_eigenvectors = storage.output.vec_eigenvalues
+    mat_eigenvectors = storage.output.mat_eigenvectors
 
     eigenvectorfile = open(filename, "w")
 

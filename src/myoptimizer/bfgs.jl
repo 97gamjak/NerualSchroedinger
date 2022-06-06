@@ -74,7 +74,7 @@ function bfgs(loss, x0)
         A2  = I - y_k * transpose(sk ) * ρ_k
         H_k = (A1 * (H_k*A2)) + ρ_k * (sk * transpose(sk))
 
-        if(k == 1000)
+        if(k == 10)
            break
         end
     end
