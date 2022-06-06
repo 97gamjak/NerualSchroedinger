@@ -1,13 +1,5 @@
 function calc_neural_wavefunction(storage::Storage)
 
-    ####################################
-    #                                  #
-    # reading potential from inputfile #
-    #                                  #
-    ####################################
-
-    readpotential(storage)
-
     ################################
     #                              #
     # retrieving data from storage #
@@ -23,7 +15,7 @@ function calc_neural_wavefunction(storage::Storage)
     x_unit         = storage.potential.x_unit
     potential_unit = storage.potential.potential_unit
 
-    actFunc.vec_x  = ustrip(storage.potential.vec_x)
+    actFunc.vec_x  = ustrip(storage.potential.vec_x) #removing unit of energy for minimization
 
     for state in 1:nstates
 
@@ -33,7 +25,7 @@ function calc_neural_wavefunction(storage::Storage)
 
         calc_y(actFunc)
 
-        normalieze_y(storage, vec_params)
+        normalize_y(storage, vec_params)
 
         #vec_params =  basinhopping(2, loss_function, storage, vec_params)
         vec_params = bfgs(x -> loss_function(storage, x), vec_params)
@@ -49,24 +41,25 @@ function calc_neural_wavefunction(storage::Storage)
         hamiltonian = -0.5 * ħ^2 / mass * actFunc.vec_d2y_dx2 / x_unit^2 + vec_potential .* actFunc.vec_y
         hamiltonian = ustrip.(uconvert.(potential_unit, hamiltonian))
 
-        expectation       = integrate(actFunc.vec_x, actFunc.vec_y.*hamiltonian, SimpsonEven())
-        contr_expectation = abs(expectation)
+        eigenvalue       = integrate(actFunc.vec_x, actFunc.vec_y.*hamiltonian, SimpsonEven())
+        contr_eigenvalue = abs(eigenvalue)
 
-        diff_equation       = hamiltonian - expectation*actFunc.vec_y
+        diff_equation       = hamiltonian - eigenvalue*actFunc.vec_y
         contr_diff_equation = mean(abs.(diff_equation))
 
         contr_boundary = (abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / max(abs.(actFunc.vec_y)...)
 
-        loss = contr_boundary + contr_diff_equation + contr_expectation
+        loss = contr_boundary + contr_diff_equation + contr_eigenvalue
 
-        actFunc = actFunc
-
-        storage.output.vec_eigenvalues = Vector()
-        push!(storage.output.vec_eigenvalues, 17.6)
-
-        print_results(storage)
+        push!(storage.output.vec_eigenvalues, eigenvalue)
+        storage.output.mat_eigenvectors[:,state] = actFunc.vec_y
+        storage.output.mat_param_a[:,state]      = actFunc.vec_a
+        storage.output.mat_param_b[:,state]      = actFunc.vec_b
+        storage.output.mat_param_c[:,state]      = actFunc.vec_c
 
     end
+
+    print_results(storage)
 
 end
 
@@ -90,28 +83,28 @@ function loss_function(storage::Storage, vec_params::Vector{Float64})
 
     calc_y(actFunc)
 
-    normalieze_y(storage, vec_params)
+    normalize_y(storage, vec_params)
 
     calc_d2y_dx2(actFunc)
 
     hamiltonian = -0.5 * ħ^2 / mass * actFunc.vec_d2y_dx2 / x_unit^2 + vec_potential .* actFunc.vec_y
     hamiltonian = ustrip.(uconvert.(potential_unit, hamiltonian))
 
-    expectation       = integrate(actFunc.vec_x, actFunc.vec_y.*hamiltonian, SimpsonEven())
-    contr_expectation = abs(expectation)
+    eigenvalue       = integrate(actFunc.vec_x, actFunc.vec_y.*hamiltonian, SimpsonEven())
+    contr_eigenvalue = abs(eigenvalue)
 
-    diff_equation       = hamiltonian - expectation*actFunc.vec_y
+    diff_equation       = hamiltonian - eigenvalue*actFunc.vec_y
     contr_diff_equation = mean(abs.(diff_equation))
 
     contr_boundary = 2*(abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / max(abs.(actFunc.vec_y)...)
 
-    loss = contr_boundary + contr_diff_equation + contr_expectation
+    loss = contr_boundary + contr_diff_equation + contr_eigenvalue
 
     #todo place this within bfgs - less printlns and better controllability
     if(actFunc.iteration % 1000 == 0)
         println("boundary   ", contr_boundary)
         println("diff_eq    ", contr_diff_equation)
-        println("eigenvalue ", contr_expectation)
+        println("eigenvalue ", contr_eigenvalue)
         println("norm       ", actFunc.norm)
         println("loss       ", loss)
         println("")
@@ -124,7 +117,7 @@ function loss_function(storage::Storage, vec_params::Vector{Float64})
 
 end
 
-function normalieze_y(storage::Storage, vec_params::Vector{Float64})
+function normalize_y(storage::Storage, vec_params::Vector{Float64})
 
     actFunc = storage.activationFunction
     nodes   = storage.settings.nodes

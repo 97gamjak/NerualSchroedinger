@@ -45,31 +45,6 @@ function dcsrch(step, f, g, ftol, gtol, xtol, stepmin, stepmax, func, grad, xk, 
         vec_h = ifelse.(dx .== 0.0, h * sign.(xk) .* tmp, h)
         g = dot(grad(func, xk + step*pk, f, vec_h), pk)
 
-        # println("\n\nsubiter ", subiter)
-
-        # subiter += 1
-
-        # println("")
-        # println("step    ", step)
-        # println("pk      ", pk)
-        # println("f       ", f)
-        # println("g       ", g)
-        # println("")   
-        # println("g0      ", g0)
-        # println("gtest   ", gtest)
-        # println("gx      ", gx)
-        # println("gy      ", gy)
-        # println("f0      ", f0)
-        # println("fx      ", fx)
-        # println("fy      ", fy)
-        # println("stx     ", stx)
-        # println("sty     ", sty)
-        # println("stepmin ", stepmin)
-        # println("stepmax ", stepmax)
-        # println("width   ", width)
-        # println("width1  ", width1)
-
-
         ftest = f0 + step*gtest
 
         if(stage == 1 && f <= ftest && g >= 0.0)
@@ -105,10 +80,6 @@ function dcsrch(step, f, g, ftol, gtol, xtol, stepmin, stepmax, func, grad, xk, 
             break
         end
 
-        #println("f     ", f)
-        #println("fx    ", fx)
-        #println("ftest ", fx)
-
         if(stage == 1 && f <= fx && f > ftest)
             fm = f - step*gtest
             fxm = fx - stx*gtest
@@ -117,8 +88,6 @@ function dcsrch(step, f, g, ftol, gtol, xtol, stepmin, stepmax, func, grad, xk, 
             gxm = gx - gtest
             gym = gy - gtest
 
-            #println("test1")
-
             stx, fxm, gxm, sty, fym, gym, step, brackt = dcstep(stx, fxm, gxm, sty, fym, gym, step, fm, gm, stepmin, stepmax, brackt)
 
             fx = fxm + stx*gtest
@@ -126,7 +95,6 @@ function dcsrch(step, f, g, ftol, gtol, xtol, stepmin, stepmax, func, grad, xk, 
             gx = gxm + gtest
             gy = gym + gtest
         else
-            #println("test2")
             stx, fx, gx, sty, fy, gy, step, brackt = dcstep(stx, fx, gx, sty, fy, gy, step, f, g, stepmin, stepmax, brackt)
         end
 
@@ -166,8 +134,6 @@ function dcsrch(step, f, g, ftol, gtol, xtol, stepmin, stepmax, func, grad, xk, 
     g = grad(func, xk + step*pk, f, vec_h)
     derphi = dot(g, pk)
     
-    # println(step)
-
     return step, f, derphi, g, warning_level
 end
 
@@ -176,7 +142,6 @@ function dcstep(stx, fx, gx, sty, fy, gy, step, f, g, stepmin, stepmax, brackt)
     sgnd = g*sign(gx)
 
     if(f > fx)
-        # println("subtest1")
         θ = 3.0*(fx - f)/(step - stx) + gx + g
         s = max(abs(θ), abs(gx), abs(g))
 
@@ -200,8 +165,6 @@ function dcstep(stx, fx, gx, sty, fy, gy, step, f, g, stepmin, stepmax, brackt)
 
         brackt = true
     elseif(sgnd < 0.0)
-
-        # println("subtest2")
         θ = 3.0*(fx - f)/(step - stx) + gx + g
         s = max(abs(θ), abs(gx), abs(g))
 
@@ -226,8 +189,6 @@ function dcstep(stx, fx, gx, sty, fy, gy, step, f, g, stepmin, stepmax, brackt)
         end
         brackt = true
     elseif(abs(g) < abs(gx))
-        
-        # println("subtest3")
         θ = 3.0*(fx - f)/(step - stx) + gx + g
         s = max(abs(θ), abs(gx), abs(g))
 
@@ -276,7 +237,6 @@ function dcstep(stx, fx, gx, sty, fy, gy, step, f, g, stepmin, stepmax, brackt)
         end
         
     else
-        # println("subtest4")
         if(brackt)
             θ = 3.0*(fy - f)/(step - sty) + gy + g
             s = max(abs(θ), abs(gy), abs(g))

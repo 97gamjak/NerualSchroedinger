@@ -17,6 +17,9 @@ function matchinput(lineelements::Vector{SubString{String}}, line::Int64, storag
     valid_key = valid_key || parse_nodes(key, value, storage)
     valid_key = valid_key || parse_potential_nodes(key, value, storage)
 
+    valid_key = valid_key || parse_dim(key, value, storage)
+
+
     if(!valid_key)
         @error ("Unknown keyword " * key * " in line " * string(line) * " in input file")
         exit(1)

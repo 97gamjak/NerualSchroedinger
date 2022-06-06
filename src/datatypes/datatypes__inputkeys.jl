@@ -16,6 +16,7 @@ Base.@kwdef struct Inputkeys
     nstates         = "n_states"
     nodes           = "nodes" #TODO: parse
     potential_nodes = "potential_nodes" #TODO: parse
+    dim             = "dimension"
 
     #########################################
     #                                       #

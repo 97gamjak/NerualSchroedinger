@@ -13,4 +13,8 @@ function set_defaults(storage::Storage)
     storage.settings.mass_unit       = u"u" #TODO: parse
 
     storage.settings.jobtype = WAVEFUNCTION
+
+    #TODO: parse input for this
+    storage.activationFunction = Sine()
+
 end

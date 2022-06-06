@@ -8,11 +8,6 @@ function init()
     storage.output       = Output()
     storage.settings     = Settings()
 
-    #TODO: parse input for this
-
-    storage.activationFunction = Sine()
-
-
     ######################################################
     #                                                    #
     # Initialize inputcontrol with all possible keywords #

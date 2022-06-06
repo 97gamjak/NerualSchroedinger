@@ -1,20 +1,7 @@
 using NeuralSchroedinger.MyOptimizer
 using LinearAlgebra
 
-# function loss(x) 
-#     loss = 0
-#     for i in 1:100
-#         loss += abs(x[1]-1.234 + (x[2]-2.478)*i)
-#     end
-#     return loss
-# end
-
 function bfgs(loss, x0)
-#function main()
-
-    x0 = x0
-    #x0 = [1.0, 1.0]
-
 
     sign_x0 = sign.(x0)
 
@@ -44,29 +31,14 @@ function bfgs(loss, x0)
 
     while(true)
 
-        # println("iter ", k)
-
         p_k = - H_k * grad_k
         alpha_k, f0, old_old_fval, grad_kp1 = linesearch(loss, grad, f0, old_old_fval, grad_k, x_k, p_k)
-
-        #alpha_k, f0_tmp, old_old_fval_tmp, grad_kp1 = line_search_armijo(loss, grad, x_k, p_k, grad_k, f0, 1e-4, 1.0)
-        # if(alpha_k == Inf)
-        #     alpha_k, f0_tmp, old_old_fval_tmp, grad_kp1 = linesearch(loss, grad, f0, old_old_fval, grad_k, x_k, p_k)
-        # end
-        # f0 = f0_tmp
-        # old_old_fval = old_old_fval_tmp
 
         x_k_prev = x_k
         x_kp1    = x_k + alpha_k * p_k
 
         sk = x_kp1 - x_k
         x_k = x_kp1
-
-        #println(x_k)
-        #println(x_kp1)
-        #println(alpha_k)
-        #println(p_k)
-
 
         y_k = grad_kp1 - grad_k
         grad_k = grad_kp1

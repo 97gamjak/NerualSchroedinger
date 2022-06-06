@@ -5,9 +5,9 @@
 #####################################
 mutable struct Output
 
-    vec_param_a::Vector{Float64}
-    vec_param_b::Vector{Float64}
-    vec_param_c::Vector{Float64}
+    mat_param_a::Matrix{Float64}
+    mat_param_b::Matrix{Float64}
+    mat_param_c::Matrix{Float64}
     
     vec_eigenvalues::Vector{Float64}
 

@@ -8,3 +8,5 @@ nodes 40
 n_states 1
 
 jobtype wavefunction
+
+dimension 1

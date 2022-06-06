@@ -8,6 +8,16 @@ function neuralNetwork(args::Vector{String})
 
     readinfile(storage)
 
+    ####################################
+    #                                  #
+    # reading potential from inputfile #
+    #                                  #
+    ####################################
+
+    readpotential(storage)
+
+    init_output(storage)
+
     calc_neuralnet(storage)
 
     print_results(storage)
