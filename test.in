@@ -1,11 +1,9 @@
 potential_inputfile test.dat
 #potential_inputfile test2.dat
 
-directory results
+directory wavefunction
 
-stencil 9
-
-nodes 40
+nodes 80
 
 n_states 1
 

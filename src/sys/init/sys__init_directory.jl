@@ -24,5 +24,6 @@ function init_directory(storage::Storage)
 
     mkdir(directory)
 
-    storage.files.directory = directory
+    storage.files.directory      = directory
+    storage.files.scan_directory = directory
 end

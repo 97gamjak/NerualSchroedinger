@@ -38,7 +38,8 @@ mutable struct Files
     # output directory #
     ####################
 
-    directory::String
+    directory     ::String
+    scan_directory::String
 
     Files() = new()
 end

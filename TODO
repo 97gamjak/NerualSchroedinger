@@ -3,5 +3,8 @@ rewrite potential input into directory
 write checkinput for all parsed keywords
 
 write out file
-
 write log file
+write manual (at least for inputfile)
+
+check if nodes_min, nodes_max and nodes are all set => error
+check if nodes_min smaller than nodes_max

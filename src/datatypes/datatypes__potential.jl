@@ -14,6 +14,8 @@ mutable struct Potential
     
     vec_x    ::Vector{Unitful.Length}
 
+    mat_coords::Matrix{Unitful.Length}
+
     vec_potential::Vector{Unitful.Energy}
 
     

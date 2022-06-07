@@ -14,9 +14,16 @@ Base.@kwdef struct Inputkeys
     jobtype         = "jobtype"
     mass            = "mass"  #TODO: parse input
     nstates         = "n_states"
-    nodes           = "nodes" #TODO: parse
-    potential_nodes = "potential_nodes" #TODO: parse
-    dim             = "dimension"
+
+    nodes           = "nodes"
+    nodes_min       = "nodes_min"
+    nodes_max       = "nodes_max"
+
+    potential_nodes     = "potential_nodes"
+    potential_nodes_min = "potential_nodes_min"
+    potential_nodes_max = "potential_nodes_max"
+
+    dim = "dimension"
 
     #########################################
     #                                       #

@@ -37,6 +37,7 @@ function set_defaults(storage::Storage)
     #####################################
 
     storage.settings.jobtype = WAVEFUNCTION
+    storage.settings.scan    = false
 
     #################################################
     # dafault activation function is SIREN approach #

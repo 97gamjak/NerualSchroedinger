@@ -25,7 +25,12 @@ function matchinput(lineelements::Vector{SubString{String}}, line::Int64, storag
     valid_key = valid_key || parse_jobtype(key, value, storage)
 
     valid_key = valid_key || parse_nodes(key, value, storage)
+    valid_key = valid_key || parse_nodes_min(key, value, storage)
+    valid_key = valid_key || parse_nodes_max(key, value, storage)
+
     valid_key = valid_key || parse_potential_nodes(key, value, storage)
+    valid_key = valid_key || parse_potential_nodes_min(key, value, storage)
+    valid_key = valid_key || parse_potential_nodes_max(key, value, storage)
 
     #############################
     # Numerov specific keywords #

@@ -7,13 +7,9 @@ function calc_neural_wavefunction(storage::Storage)
     ################################
 
     ndatapoints    = storage.potential.ndatapoints
-    vec_potential  = storage.potential.vec_potential
-    mass           = storage.settings.mass
     nstates        = storage.settings.nstates
     nodes          = storage.settings.nodes
     actFunc        = storage.activationFunction
-    x_unit         = storage.potential.x_unit
-    potential_unit = storage.potential.potential_unit
 
     actFunc.vec_x  = ustrip(storage.potential.vec_x) #removing unit of energy for minimization
 
@@ -111,7 +107,7 @@ function loss_function(storage::Storage, vec_params::Vector{Float64})
     vec_diffequation   = vec_hamiltonian - eigenvalue*actFunc.vec_y
     contr_diffequation = mean(abs.(vec_diffequation))
 
-    contr_boundary = 2*(abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / max(abs.(actFunc.vec_y)...)
+    contr_boundary = 2*(abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / maximum(abs.(actFunc.vec_y))
 
     loss = contr_boundary + contr_diffequation + contr_eigenvalue
 
@@ -144,7 +140,7 @@ function normalize_y(storage::Storage, vec_params::Vector{Float64})
 end
 
 function calc_hamiltonian_y(storage::Storage)
-    
+
     vec_potential  = storage.potential.vec_potential
     mass           = storage.settings.mass
     actFunc        = storage.activationFunction

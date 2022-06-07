@@ -81,3 +81,5 @@ function calc_d2y_dx2(sine::Sine)
         push!(sine.vec_d2y_dx2, -sum(sine.vec_a.*sine.vec_b.^2 .*sin.(sine.vec_b*x .+ sine.vec_c)))
     end
 end
+
+

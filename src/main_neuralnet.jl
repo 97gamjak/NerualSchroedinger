@@ -26,6 +26,8 @@ function neuralNetwork(args::Vector{String})
 
     readpotential(storage)
 
+    println(storage.potential.mat_coords)
+
     ####################################
     # initialization of output results #
     ####################################
