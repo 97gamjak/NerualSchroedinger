@@ -7,6 +7,8 @@ function init_output(storage::Storage)
 
     set_paramfile_name(storage)
 
+    init_directory(storage)
+
 end
 
 function set_paramfile_name(storage::Storage)
@@ -35,7 +37,7 @@ function set_paramfile_name(storage::Storage)
     catch
         storage.files.paramfile_b_name = paramfile_b_name
     end
-    
+
     try
         paramfile_c_name = storage.files.paramfile_c_name
     catch

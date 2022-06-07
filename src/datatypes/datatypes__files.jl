@@ -34,5 +34,11 @@ mutable struct Files
     paramfile_b        ::IOStream
     paramfile_c        ::IOStream
 
+    ####################
+    # output directory #
+    ####################
+
+    directory::String
+
     Files() = new()
 end

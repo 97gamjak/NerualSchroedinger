@@ -15,6 +15,8 @@ function matchinput(lineelements::Vector{SubString{String}}, line::Int64, storag
 
     valid_key = valid_key || parse_potential_inputfile(key, value, storage)
     valid_key = valid_key || parse_eigenvaluefile(key, value, storage)
+    
+    valid_key = valid_key || parse_directory(key, value, storage)
 
     ###################################
     # NeuralNetwork specific keywords #

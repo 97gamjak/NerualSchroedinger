@@ -7,6 +7,8 @@ function set_defaults(storage::Storage)
     storage.files.eigenvaluefile_name  = "eigenvalues.dat"
     storage.files.eigenvectorfile_name = "eigenvectors.dat"
     storage.files.paramfile_name       = "paramfile.dat"
+    
+    storage.files.directory            = "results"
 
     ##############################
     # defaults for neuralNetwork #

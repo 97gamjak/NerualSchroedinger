@@ -47,6 +47,8 @@ Base.@kwdef struct Inputkeys
     eigenvaluefile  = "eigenvalue_file"
     eigenvectorfile = "eigenstate_file"
 
+    directory       = "directory"
+
     ###########################
     #                         #
     # numerov related keywors #
