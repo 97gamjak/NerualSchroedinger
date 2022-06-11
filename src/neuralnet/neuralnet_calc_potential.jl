@@ -39,6 +39,17 @@ function calc_neural_potential(storage::Storage)
     storage.output.mat_param_b[:,1]      = actFunc.vec_b
     storage.output.mat_param_c[:,1]      = actFunc.vec_c
 
+
+    #TODO: make script for evaluation
+    file = open("sepp.dat", "w")
+
+    for i in 0:10000
+
+        x = ustrip(actFunc.vec_x[1]) + (ustrip(actFunc.vec_x[end]) - ustrip(actFunc.vec_x[1]))*i/10000
+
+        println(file, x, "   ", sum(actFunc.vec_a.*sin.(actFunc.vec_b*x .+ actFunc.vec_c)))
+    end
+
     print_results(storage)
 
 end
