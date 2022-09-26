@@ -11,7 +11,7 @@ function calc_neural_wavefunction(storage::Storage)
     nodes          = storage.settings.nodes
     actFunc        = storage.activationFunction
 
-    actFunc.vec_x  = ustrip(storage.potential.vec_x) #removing unit of energy for minimization
+    actFunc.coords  = ustrip(storage.potential.x) #removing unit of energy for minimization
 
     #################################################################
     # calculation loop for requested number of states - default = 1 #
@@ -24,54 +24,53 @@ function calc_neural_wavefunction(storage::Storage)
         # TODO: at the moment only random implemented  #
         ################################################
 
-        init_y(actFunc, nodes)        
+        init_f(actFunc, nodes, state)        
 
         #############################################################
         # calculation of activation function at input grid points   #
         # TODO: try to use potentialNN approach as further approach #
         #############################################################
 
-        calc_y(actFunc)
+        calc_f(actFunc)
 
         ###########################################
         # Normalize generated activation function #
         # and set initial params for minimizer    #
         ###########################################
 
-        vec_params = [actFunc.vec_a; actFunc.vec_b; actFunc.vec_c]
-        normalize_y(storage, vec_params)
+        params = [actFunc.a; actFunc.b; actFunc.c]
+        normalize_f(storage, params)
 
         #################################
         # actual optimization           #
         # TODO: implement basin hopping #
         #################################
 
-        #vec_params =  basinhopping(2, loss_function, storage, vec_params)
-        vec_params = bfgs(x -> loss_function(storage, x), vec_params)
+        params = bfgs(x -> loss_function(storage, x), params)
             
-        calc_y(actFunc)
+        calc_f(actFunc)
 
-        normalize_y(storage, vec_params)
+        normalize_f(storage, params)
 
-        calc_d2y_dx2(actFunc)
+        calc_laplace_f(actFunc)
 
-        vec_hamiltonian = calc_hamiltonian_y(storage)
+        hamiltonian = calc_hamiltonian_f(storage)
 
-        eigenvalue       = integrate(actFunc.vec_x, actFunc.vec_y.*vec_hamiltonian, SimpsonEven())
+        eigenvalue       = integrate(actFunc.coords, actFunc.f.*hamiltonian, SimpsonEven())
         contr_eigenvalue = abs(eigenvalue)
 
-        vec_diffequation   = vec_hamiltonian - eigenvalue*actFunc.vec_y
-        contr_diffequation = mean(abs.(vec_diffequation))
+        diffequation   = hamiltonian - eigenvalue*actFunc.f
+        contr_diffequation = mean(abs.(diffequation))
 
-        contr_boundary = (abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / max(abs.(actFunc.vec_y)...)
+        contr_boundary = (abs(actFunc.f[1]) + abs(actFunc.f[ndatapoints])) / max(abs.(actFunc.f)...)
 
         loss = contr_boundary + contr_diffequation + contr_eigenvalue
 
-        push!(storage.output.vec_eigenvalues, eigenvalue)
-        storage.output.mat_eigenvectors[:,state] = actFunc.vec_y
-        storage.output.mat_param_a[:,state]      = actFunc.vec_a
-        storage.output.mat_param_b[:,state]      = actFunc.vec_b
-        storage.output.mat_param_c[:,state]      = actFunc.vec_c
+        push!(storage.output.eigenvalues, eigenvalue)
+        storage.output.mat_eigenvectors[:,state] = actFunc.f
+        storage.output.mat_param_a[:,state]      = actFunc.a
+        storage.output.mat_param_b[:,state]      = actFunc.b
+        storage.output.mat_param_c[:,state]      = actFunc.c
 
     end
 
@@ -79,35 +78,35 @@ function calc_neural_wavefunction(storage::Storage)
 
 end
 
-function loss_function(storage::Storage, vec_params::Vector{Float64})
+function loss_function(storage::Storage, params::Vector{Float64})
 
     nodes          = storage.settings.nodes
     ndatapoints    = storage.potential.ndatapoints
     actFunc        = storage.activationFunction
 
-    vec_a = vec_params[1:nodes]
-    vec_b = vec_params[nodes+1:2*nodes]
-    vec_c = vec_params[2*nodes+1:3*nodes]
+    a = params[1:nodes]
+    b = params[nodes+1:2*nodes]
+    c = params[2*nodes+1:3*nodes]
 
-    actFunc.vec_a = vec_a
-    actFunc.vec_b = vec_b
-    actFunc.vec_c = vec_c
+    actFunc.a = a
+    actFunc.b = b
+    actFunc.c = c
 
     calc_y(actFunc)
 
-    normalize_y(storage, vec_params)
+    normalize_y(storage, params)
 
     calc_d2y_dx2(actFunc)
 
-    vec_hamiltonian = calc_hamiltonian_y(storage)
+    hamiltonian = calc_hamiltonian_y(storage)
 
-    eigenvalue       = integrate(actFunc.vec_x, actFunc.vec_y.*vec_hamiltonian, SimpsonEven())
+    eigenvalue       = integrate(actFunc.x, actFunc.y.*hamiltonian, SimpsonEven())
     contr_eigenvalue = abs(eigenvalue)
 
-    vec_diffequation   = vec_hamiltonian - eigenvalue*actFunc.vec_y
-    contr_diffequation = mean(abs.(vec_diffequation))
+    diffequation   = hamiltonian - eigenvalue*actFunc.y
+    contr_diffequation = mean(abs.(diffequation))
 
-    contr_boundary = 2*(abs(actFunc.vec_y[1]) + abs(actFunc.vec_y[ndatapoints])) / maximum(abs.(actFunc.vec_y))
+    contr_boundary = 2*(abs(actFunc.y[1]) + abs(actFunc.y[ndatapoints])) / maximum(abs.(actFunc.y))
 
     loss = contr_boundary + contr_diffequation + contr_eigenvalue
 
@@ -128,26 +127,26 @@ function loss_function(storage::Storage, vec_params::Vector{Float64})
 
 end
 
-function normalize_y(storage::Storage, vec_params::Vector{Float64})
+function normalize_f(storage::Storage, params::Vector{Float64})
 
     actFunc = storage.activationFunction
     nodes   = storage.settings.nodes
 
-    actFunc.norm        = sqrt(integrate(actFunc.vec_x, actFunc.vec_y.^2, SimpsonEven()))
-    actFunc.vec_a      /= actFunc.norm
-    actFunc.vec_y      /= actFunc.norm
-    vec_params[1:nodes] = actFunc.vec_a
+    actFunc.norm     = sqrt(integrate(actFunc.coords, actFunc.f.^2, SimpsonEven()))   #TODO: integration of activation function to be used!
+    actFunc.a       /= actFunc.norm
+    actFunc.y       /= actFunc.norm
+    params[1:nodes]  = actFunc.a
 end
 
-function calc_hamiltonian_y(storage::Storage)
+function calc_hamiltonian_f(storage::Storage)
 
-    vec_potential  = storage.potential.vec_potential
+    potential      = storage.potential.potential
     mass           = storage.settings.mass
     actFunc        = storage.activationFunction
     x_unit         = storage.potential.x_unit
     potential_unit = storage.potential.potential_unit
 
-    vec_hamiltonian = -0.5 * ħ^2 / mass * actFunc.vec_d2y_dx2 / x_unit^2 + vec_potential .* actFunc.vec_y
+    hamiltonian = -0.5 * ħ^2 / mass * actFunc.laplace_f / x_unit^2 + potential .* actFunc.f
     
-    return ustrip.(uconvert.(potential_unit, vec_hamiltonian))
+    return ustrip.(uconvert.(potential_unit, hamiltonian))
 end

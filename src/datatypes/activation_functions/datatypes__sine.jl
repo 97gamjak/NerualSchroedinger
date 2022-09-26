@@ -5,19 +5,21 @@
 #######################################################
 mutable struct Sine <: ActivationFunction
 
-    vec_a::Vector{Float64}
-    vec_b::Vector{Float64}
-    vec_c::Vector{Float64}
+    a::Vector{Float64}
+    b::Matrix{Float64}
+    c::Matrix{Float64}
 
-    vec_y::Vector{Float64}
-    vec_dy_dx::Vector{Float64}
-    vec_d2y_dx2::Vector{Float64}
+    f::Vector{Float64}
+    ∇f::Matrix{Float64} # for band structure calculcation
+    laplace_f::Vector{Float64}
 
-    vec_x::Vector{Float64}
+    coords::Matrix{Float64}
 
     integration::Function  # TODO: at the moment not used!
 
-    norm::Float64  # TODO: at the moment not used properly... but implemented
+    norm::Float64
+
+    state::Int64
 
     iteration::Int64
 
@@ -29,26 +31,28 @@ end
 # function to initialize sine activation function randomly #
 #                                                          #
 ############################################################
-function init_y(sine::Sine, nodes::Int64)
+function init_f(sine::Sine, nodes::Int64, state::Int64)
     weird_number1 = sqrt(6) #divided by number of nodes in sqrt???
     weird_number2 = 30
 
-    sine.vec_a = rand(Uniform(0, 2), nodes)
-    sine.vec_b = weird_number2 .* rand(Uniform(-weird_number1, weird_number1), nodes)
-    sine.vec_c = rand(Uniform(0, 2*π), nodes)
+    sine.state = state
+
+    sine.a = rand(Uniform(0, 2), nodes)
+    sine.b = weird_number2 .* rand(Uniform(-weird_number1, weird_number1), (nodes, dim)) #maybe for higher dimensions different initialization
+    sine.c = rand(Uniform(0, 2*π), (nodes, dim)) #maybe for higher dimensions different initialization
 end
 
 ###########################################################
 #                                                         #
 # function to calculate activation function of grid vec_x #
 #                                                         #
-#                   ψ = ∑ᵢ aᵢ*sin(bᵢx + cᵢ)               #
+#                   ψ = ∑ᵢ aᵢ*sin(bᵢx + cᵢ)                  #
 #                                                         #
 ###########################################################
-function calc_y(sine::Sine)
-    sine.vec_y = Vector()
-    for x in sine.vec_x
-        push!(sine.vec_y, sum(sine.vec_a.*sin.(sine.vec_b*x .+ sine.vec_c)))
+function calc_f(sine::Sine)
+    sine.f = Vector()
+    for x in sine.coords
+        push!(sine.f, sum(sine.a.*sin.(sine.b*x .+ sine.c)))
     end
 end
 
@@ -57,13 +61,13 @@ end
 # function to calculate first derivative of activation #
 # function of grid vec_x                               # 
 #                                                      #
-#               dψ/dx = ∑ᵢ aᵢ*bᵢ*cos(bᵢx + cᵢ)         #
+#               dψ/dx = ∑ᵢ aᵢ*bᵢ*cos(bᵢx + cᵢ)             #
 #                                                      #
 ########################################################
-function calc_dy_dx(sine::Sine)
-    sine.vec_dy_dx = Vector()
-    for x in sine.vec_x
-        push!(sine.vec_dy_dx, sum(sine.vec_a.*sine.vec_b.*cos.(sine.vec_a*x .+ sine.vec_c)))
+function calc_∇f(sine::Sine)
+    sine.∇f = Vector()
+    for x in sine.coords
+        push!(sine.∇f, sum(sine.a.*sine.b.*cos.(sine.a*x .+ sine.c)))
     end
 end
 
@@ -72,13 +76,13 @@ end
 # function to calculate second derivative of activation #
 # function of grid vec_x                                # 
 #                                                       #
-#            d²ψ/dx² = -∑ᵢ aᵢ*b²ᵢ*sin(bᵢx + cᵢ)         #
+#            d²ψ/dx² = -∑ᵢ aᵢ*b²ᵢ*sin(bᵢx + cᵢ)             #
 #                                                       #
 #########################################################
-function calc_d2y_dx2(sine::Sine)
-    sine.vec_d2y_dx2 = Vector()
-    for x in sine.vec_x
-        push!(sine.vec_d2y_dx2, -sum(sine.vec_a.*sine.vec_b.^2 .*sin.(sine.vec_b*x .+ sine.vec_c)))
+function calc_laplace_f(sine::Sine)
+    sine.laplace_f = Vector()
+    for x in sine.coords
+        push!(sine.laplace_f, -sum(sine.a.*sine.b.^2 .*sin.(sine.b*x .+ sine.c)))
     end
 end
 
